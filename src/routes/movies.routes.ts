@@ -8,5 +8,7 @@ router.get("/:id", moviesController.listById)
 router.post("/", moviesController.create)
 router.patch("/:id", moviesController.update)
 router.delete("/:id", moviesController.delete)
+router.post("/:id/genres",moviesController.addGenres
+)
 
 export default router

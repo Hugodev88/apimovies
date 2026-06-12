@@ -1,5 +1,6 @@
 import { request, Request, Response } from "express"
-import { getMovies, createMovie, getMovieById, updateMovie, deleteMovie } from "../repositories/moviesRepository"
+import { getMovies, createMovie, getMovieById, updateMovie, deleteMovie, addGenresToMovie } from "../repositories/moviesRepository"
+import { prisma } from "../config/prisma"
 
 export const moviesController = {
     async list(req: Request, res: Response) {
@@ -50,5 +51,18 @@ export const moviesController = {
         } catch (error) {
             res.status(500).json({ error: "Erro ao deletar filme" })
         }
+    },
+
+    async addGenres(req: Request, res: Response) {
+        const id = Number(req.params.id)
+        const { genreIds } = req.body
+
+        try {
+            const movie = await addGenresToMovie(id, genreIds)
+            res.status(201).json(movie)
+        } catch (error) {
+            res.status(409).json({error: "Esse gênero já está associado ao filme."})
+        }
+        
     }
 }
