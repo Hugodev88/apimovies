@@ -1,6 +1,7 @@
-import { request, Request, Response } from "express"
+import { Request, Response } from "express"
 import { getMovies, createMovie, getMovieById, updateMovie, deleteMovie, addGenresToMovie } from "../repositories/moviesRepository"
-import { prisma } from "../config/prisma"
+import { createMovieSchema } from "../schemas/movieSchema"
+import { ZodError } from "zod"
 
 export const moviesController = {
     async list(req: Request, res: Response) {
@@ -24,10 +25,15 @@ export const moviesController = {
 
     async create(req: Request, res: Response) {
         try {
-            const {title, description, releaseYear} = req.body
-            const movie = await createMovie({ title, description, releaseYear})
+            const data = createMovieSchema.parse(req.body)
+            const movie = await createMovie(data)
             res.status(201).json(movie)
         } catch (error) {
+
+            if(error instanceof ZodError) {
+                return res.status(400).json({errors: error.issues});
+            }
+
             res.status(500).json({ error: "Erro ao adicionar filme" })
         }
     },

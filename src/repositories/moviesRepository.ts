@@ -25,8 +25,30 @@ export const getMovieById = (id: number) => {
     return prisma.movie.findUnique({ where: {id}})
 }
 
-export const createMovie = (movie: Prisma.MovieCreateInput) => {
-    return prisma.movie.create({ data: movie })
+export const createMovie = ({title,description,releaseYear,genreIds}: {title: string,description?: string, releaseYear?: number, genreIds: number[]}) => {
+    return prisma.movie.create({
+        data: {
+            title,
+            description,
+            releaseYear,
+            movieGenres: {
+                create: genreIds.map((genreId) => ({
+                    genre: {
+                        connect: {
+                            id: genreId
+                        }
+                    }
+                }))
+            }
+        },
+        include: {
+            movieGenres: {
+                include: {
+                    genre: true
+                }
+            }
+        }
+    })
 }
 
 export const updateMovie = (id: number, movie: Prisma.MovieCreateInput) => {
