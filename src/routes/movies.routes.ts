@@ -7,5 +7,6 @@ router.get("/", moviesController.list)
 router.get("/:id", moviesController.listById)
 router.post("/", moviesController.create)
 router.patch("/:id", moviesController.update)
+router.delete("/:id", moviesController.delete)
 
 export default router

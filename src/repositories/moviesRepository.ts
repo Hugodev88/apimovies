@@ -1,20 +1,11 @@
-import "dotenv/config"
-import { Pool } from "pg"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient, Prisma } from "../../generated/prisma/client"
-
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-})
-
-const adapter = new PrismaPg(pool)
-const prisma = new PrismaClient({ adapter })
+import { prisma } from "../config/prisma"
+import { Prisma } from "../../generated/prisma/client"
 
 export const getMovies = () => {
     return prisma.movie.findMany()
 }
 
-export const getMovie = (id: number) => {
+export const getMovieById = (id: number) => {
     return prisma.movie.findUnique({ where: {id}})
 }
 
@@ -27,4 +18,8 @@ export const updateMovie = (id: number, movie: Prisma.MovieCreateInput) => {
         where: {id},
         data: movie
     })
+}
+
+export const deleteMovie = (id: number) => {
+    return prisma.movie.delete({where: {id}})
 }

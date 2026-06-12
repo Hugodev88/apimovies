@@ -1,5 +1,5 @@
 import { request, Request, Response } from "express"
-import { getMovies, createMovie, getMovie, updateMovie } from "../repositories/moviesRepository"
+import { getMovies, createMovie, getMovieById, updateMovie, deleteMovie } from "../repositories/moviesRepository"
 
 export const moviesController = {
     async list(req: Request, res: Response) {
@@ -14,7 +14,7 @@ export const moviesController = {
     async listById(req: Request, res: Response) {
         const id = Number(req.params.id)
         try {
-            const movie = await getMovie(id)
+            const movie = await getMovieById(id)
             res.json(movie)
         } catch (error) {
             res.status(500).json({ error: "Erro ao buscar filmes" })
@@ -39,6 +39,16 @@ export const moviesController = {
             res.status(201).json(movie)
         } catch (error) {
             res.status(500).json({ error: "Erro ao atualizar filme" })
+        }
+    },
+    
+    async delete(req: Request, res: Response) {
+        const id = Number(req.params.id)
+        try {
+            const movie = await deleteMovie(id)
+            res.status(201).json(movie)
+        } catch (error) {
+            res.status(500).json({ error: "Erro ao deletar filme" })
         }
     }
 }
